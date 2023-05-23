@@ -1,4 +1,6 @@
+import 'package:almacenamiento_imagenes/detailBook.dart';
 import 'package:almacenamiento_imagenes/formBook.dart';
+import 'package:almacenamiento_imagenes/modifiedBook.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,6 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: SaveImage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -88,16 +91,15 @@ class _SaveImageState extends State<SaveImage> {
             onTap: () {
               setState(() {
                 selectedId = photo.id;
-
                 print("El id es:" + photo.id.toString());
                 print("El nombre es:" + photo.name_book.toString());
                 print("El autor es:" + photo.author_book.toString());
                 print("El año es:" + photo.book_year.toString());
-                print("El publisher es:" + photo.book_publisher.toString());
+                print("El publisher es:" + photo.book_publisher.toString()); 
+                _showSnackBar(context, "Seleccionó: " + photo.name_book.toString());
               });
             },
-
-             child: Card(
+            child: Card(
               color: selectedId == photo.id ? Colors.grey : null,
               child: Column(
                 children: <Widget>[
@@ -106,7 +108,7 @@ class _SaveImageState extends State<SaveImage> {
                   ),
                 ],
               ),
-            ), 
+            ),
           );
         }).toList(),
       ),
@@ -134,30 +136,53 @@ class _SaveImageState extends State<SaveImage> {
             bottom: 5.0,
             right: 10.0,
             child: FloatingActionButton(
-              heroTag: "button1",
-              onPressed: () {},
-              child: Icon(Icons.edit),
-              mini: true
+              heroTag: "button4",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => detailBook(id: selectedId!)),
+                );
+              },
+              child: Icon(Icons.remove_red_eye_rounded),
+              mini: true,
+              backgroundColor: Colors.green,
             ),
           ),
           Positioned(
             bottom: 5.0,
             right: 80.0,
             child: FloatingActionButton(
-              heroTag: "button2",
-              onPressed: () {
-                if (selectedId! != null) {
-                  deleteBook(selectedId!);
-                } else {}
-              },
-              child: Icon(Icons.remove),
-              mini: true,
-              backgroundColor: Colors.red
-            ),
+                heroTag: "button1",
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => modifiedBook(id: selectedId!)),
+                  );
+                },
+                child: Icon(Icons.edit),
+                mini: true),
           ),
           Positioned(
             bottom: 5.0,
             right: 150.0,
+            child: FloatingActionButton(
+                heroTag: "button2",
+                onPressed: () {
+                  if (selectedId == null) {
+                    _showSnackBar(context, "Seleccione un libro");
+                  } else {
+                    deleteBook(selectedId!);
+                  }
+                },
+                child: Icon(Icons.remove),
+                mini: true,
+                backgroundColor: Colors.red),
+          ),
+          Positioned(
+            bottom: 5.0,
+            right: 225.0,
             child: FloatingActionButton(
               heroTag: "button3",
               onPressed: () {
@@ -167,7 +192,7 @@ class _SaveImageState extends State<SaveImage> {
                 );
               },
               child: Icon(Icons.add),
-              mini:true,
+              mini: true,
               backgroundColor: Colors.green,
             ),
           ),
@@ -175,4 +200,22 @@ class _SaveImageState extends State<SaveImage> {
       ),
     );
   }
+/* 
+  _showSnackBar(BuildContext context, String mensaje) {
+    final snackBar = SnackBar(
+      content: Text(mensaje),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  } */
+
+  _showSnackBar(BuildContext context, String mensaje) {
+  final snackBar = SnackBar(
+    content: Text(mensaje),
+    duration: Duration(seconds: 1),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackBar).closed.then((reason) {
+    // Agrega aquí el código para actualizar la aplicación
+  });
+}
+
 }

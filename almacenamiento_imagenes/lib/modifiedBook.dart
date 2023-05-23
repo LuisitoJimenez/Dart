@@ -7,20 +7,22 @@ import 'package:image_picker/image_picker.dart';
 import 'convert_utility.dart';
 import 'dbManager.dart';
 
-class formBook extends StatefulWidget {
-  const formBook({super.key});
+class modifiedBook extends StatefulWidget {
+  final int? id;
+  const modifiedBook({Key? key, this.id}) : super(key: key);
 
   @override
-  State<formBook> createState() => _formBookState();
+  State<modifiedBook> createState() => _modifiedBookState();
 }
 
-class _formBookState extends State<formBook> {
+class _modifiedBookState extends State<modifiedBook> {
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerPublisher = TextEditingController();
   TextEditingController controllerYear = TextEditingController();
   TextEditingController controllerAuthor = TextEditingController();
 
-  late List<Photo> photos;
+  Photo? photo;
+
   late dbManager dbmanager;
   late Future<File> imageFile;
   late Image image;
@@ -45,17 +47,34 @@ class _formBookState extends State<formBook> {
   void initState() {
     super.initState();
     dbmanager = dbManager();
-    photos = [];
-    refreshImages();
+    //photos = [];
+    //refreshImages();
+    if (widget.id != null) {
+      dbmanager.getPhoto(widget.id!).then((photo) {
+        setState(() {
+          controllerName.text = photo.name_book!;
+          controllerAuthor.text = photo.author_book!;
+          controllerPublisher.text = photo.book_publisher!;
+          controllerYear.text = photo.book_year!;
+          this.photo = photo;
+        });
+      });
+    }
   }
 
-  refreshImages() {
-    dbmanager.getPhotos().then((images) {
-      setState(() {
-        photos.clear();
-        photos.addAll(images);
-      });
-    });
+  updateBook() {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      if (widget.id != null && _image != null) {
+        String imgString = Utility.base64String(_image!.readAsBytesSync());
+        Photo photo = Photo(widget.id, imgString, name_book, author_book,
+            book_publisher, book_year);
+        dbmanager.update(photo);
+      } else {
+        _showSnackBar(context, "Agregue una imagen");
+      }
+      clearData();
+    }
   }
 
   clearData() {
@@ -78,21 +97,6 @@ class _formBookState extends State<formBook> {
     });
   }
 
-  saveBook() {
-    if (formKey.currentState!.validate()) {
-      //formKey.currentState!.save();
-      if (selectedId == null && _image != null) {
-        String imgString = Utility.base64String(_image!.readAsBytesSync());
-            Photo photo = Photo(null, imgString, name_book, author_book, book_publisher, book_year);
-        dbmanager.save(photo);
-        refreshImages();
-      } else {
-        _showSnackBar( context, "Agregue una imagen");
-      }
-      clearData();
-    }
-  }
-
   Widget form() {
     return Form(
       key: formKey,
@@ -106,7 +110,7 @@ class _formBookState extends State<formBook> {
             const SizedBox(
               height: 10,
             ),
-            if (_image != null)
+            if (_image != null) 
               Image.file(
                 _image!,
                 width: 200,
@@ -208,49 +212,10 @@ class _formBookState extends State<formBook> {
                 ),
                 MaterialButton(
                   onPressed: () {
-                    if (formKey.currentState!.validate() && _image != null) {
-                      formKey.currentState!.save();
-                      saveBook();
-                      Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                    );
-                    }
-                    if (_image == null) {
-                      _showSnackBar(context, "Agregue una imagen");
-                    }
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(color: Colors.red),
-                  ),
-                  child: const Text("Aceptar"),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                MaterialButton(
-                  onPressed: () {
                     setState(() {
                       isUpdating = false;
                     });
-                    clearData();
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    side: const BorderSide(color: Colors.red),
-                  ),
-                  child: const Text("Limpiar"),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                MaterialButton(
-                  onPressed: () {
-                    setState(() {
-                      isUpdating = false;
-                    });
-                   Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const MyApp()),
                     );
@@ -260,6 +225,23 @@ class _formBookState extends State<formBook> {
                     side: const BorderSide(color: Colors.red),
                   ),
                   child: const Text("Cancelar"),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                MaterialButton(
+                  onPressed: () {
+                    updateBook();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MyApp()),
+                    );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: const BorderSide(color: Colors.red),
+                  ),
+                  child: const Text("Aceptar"),
                 ),
               ],
             )
@@ -286,6 +268,9 @@ class _formBookState extends State<formBook> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+             if (_image == null  && photo != null) ...[
+              Utility.ImageFromBase64String(photo!.photo_name!),
+            ],
             Flexible(
               child: form(),
             )

@@ -6,7 +6,6 @@ import 'package:sqflite/sqflite.dart';
 import 'photo.dart';
 
 class dbManager {
-  
   static Database? _db;
   static const String ID = 'id';
   static const String PHOTO_NAME = 'photo_name';
@@ -48,7 +47,14 @@ class dbManager {
   Future<List<Photo>> getPhotos() async {
     var dbClient = await db;
     //List<Map> maps = await dbClient.query(TABLE, columns: [ID, PHOTO_NAME], where: '$ID = ?', whereArgs: [1]);
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, PHOTO_NAME, NAME_BOOk, AUTHOR_BOOK, BOOK_PUBLISHER, BOOK_YEAR]);
+    List<Map> maps = await dbClient.query(TABLE, columns: [
+      ID,
+      PHOTO_NAME,
+      NAME_BOOk,
+      AUTHOR_BOOK,
+      BOOK_PUBLISHER,
+      BOOK_YEAR
+    ]);
     List<Photo> photos = [];
 
     if (maps.isNotEmpty) {
@@ -68,5 +74,31 @@ class dbManager {
   Future close() async {
     var dbClient = await db;
     dbClient.close();
+  }
+
+  Future<Photo> getPhoto(int id) async {
+    var dbClient = await db;
+    List<Map> maps = await dbClient.query(TABLE,
+        columns: [
+          ID,
+          PHOTO_NAME,
+          NAME_BOOk,
+          AUTHOR_BOOK,
+          BOOK_PUBLISHER,
+          BOOK_YEAR
+        ],
+        where: '$ID = ?',
+        whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return Photo.fromMap(maps.first as Map<String, dynamic>);
+    } else {
+      throw Exception('No se encontró el libro con el id $id');
+    }
+  }
+
+  Future<int> update(Photo photo) async {
+    var dbClient = await db;
+    return await dbClient
+        .update(TABLE, photo.toMap(), where: '$ID = ?', whereArgs: [photo.id]);
   }
 }
