@@ -80,7 +80,6 @@ class _formBookState extends State<formBook> {
 
   saveBook() {
     if (formKey.currentState!.validate()) {
-      //formKey.currentState!.save();
       if (selectedId == null && _image != null) {
         String imgString = Utility.base64String(_image!.readAsBytesSync());
             Photo photo = Photo(null, imgString, name_book, author_book, book_publisher, book_year);
@@ -135,7 +134,7 @@ class _formBookState extends State<formBook> {
               controller: controllerAuthor,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'Author',
+                labelText: 'Autor',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),

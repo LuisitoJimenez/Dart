@@ -40,6 +40,10 @@ class _SaveImageState extends State<SaveImage> {
   late Image image;
   late int? selectedId = null;
 
+  String _searchText = "";
+
+  final TextEditingController _textController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -86,7 +90,9 @@ class _SaveImageState extends State<SaveImage> {
         childAspectRatio: 0.8,
         mainAxisSpacing: 1.0,
         crossAxisSpacing: 1.0,
-        children: photos.map((photo) {
+        children: photos
+            .where((photo) => photo.name_book!.toLowerCase().contains(_searchText) || photo.author_book!.toLowerCase().contains(_searchText) || photo.book_year!.contains(_searchText) || photo.book_publisher!.toLowerCase().contains(_searchText))
+            .map((photo) {
           return GestureDetector(
             onTap: () {
               setState(() {
@@ -95,8 +101,9 @@ class _SaveImageState extends State<SaveImage> {
                 print("El nombre es:" + photo.name_book.toString());
                 print("El autor es:" + photo.author_book.toString());
                 print("El año es:" + photo.book_year.toString());
-                print("El publisher es:" + photo.book_publisher.toString()); 
-                _showSnackBar(context, "Seleccionó: " + photo.name_book.toString());
+                print("El publisher es:" + photo.book_publisher.toString());
+                _showSnackBar(
+                    context, "Seleccionó: " + photo.name_book.toString());
               });
             },
             child: Card(
@@ -118,8 +125,38 @@ class _SaveImageState extends State<SaveImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Books"),
-      ),
+          title: Text("Libros"),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(50),
+            child: Padding(
+                padding: EdgeInsets.all(5.0),
+                child: TextField(
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    hintText: "Buscar...",
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        _textController.clear();
+                        setState(() {
+                          _searchText = "";
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _searchText = value;
+                    });
+                  },
+                )),
+          )),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -138,11 +175,15 @@ class _SaveImageState extends State<SaveImage> {
             child: FloatingActionButton(
               heroTag: "button4",
               onPressed: () {
+                if (selectedId != null) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => detailBook(id: selectedId!)),
                 );
+                } else {
+                  _showSnackBar(context, "Seleccione un libro");
+                }
               },
               child: Icon(Icons.remove_red_eye_rounded),
               mini: true,
@@ -155,11 +196,15 @@ class _SaveImageState extends State<SaveImage> {
             child: FloatingActionButton(
                 heroTag: "button1",
                 onPressed: () {
+                  if (selectedId != null) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => modifiedBook(id: selectedId!)),
                   );
+                  } else {
+                    _showSnackBar(context, "Seleccione un libro");
+                  }
                 },
                 child: Icon(Icons.edit),
                 mini: true),
@@ -200,22 +245,15 @@ class _SaveImageState extends State<SaveImage> {
       ),
     );
   }
-/* 
+
   _showSnackBar(BuildContext context, String mensaje) {
     final snackBar = SnackBar(
       content: Text(mensaje),
+      duration: Duration(seconds: 1),
     );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  } */
-
-  _showSnackBar(BuildContext context, String mensaje) {
-  final snackBar = SnackBar(
-    content: Text(mensaje),
-    duration: Duration(seconds: 1),
-  );
-  ScaffoldMessenger.of(context).showSnackBar(snackBar).closed.then((reason) {
-    // Agrega aquí el código para actualizar la aplicación
-  });
-}
-
+    ScaffoldMessenger.of(context)
+        .showSnackBar(snackBar)
+        .closed
+        .then((reason) {});
+  }
 }

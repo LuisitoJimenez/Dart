@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'convert_utility.dart';
 import 'dbManager.dart';
 
- class detailBook extends StatefulWidget {
+class detailBook extends StatefulWidget {
   final int id;
   detailBook({Key? key, required this.id}) : super(key: key);
 
@@ -41,12 +41,39 @@ class _detailBookState extends State<detailBook> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             if (photo != null) ...[
-              Utility.ImageFromBase64String(photo!.photo_name!),
-              Text(photo!.name_book!),
-              Text(photo!.author_book!),
-              Text(photo!.book_publisher!),
-              Text(photo!.book_year!),
+              SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (photo != null) ...[
+                        Container(
+                          width: 300,
+                          height: 420,
+                          child:
+                              Utility.ImageFromBase64String(photo!.photo_name!),
+                        ),
+                        Text("Nombre: " + photo!.name_book!),
+                        Text("Autor: " + photo!.author_book!),
+                        Text("Editorial: " + photo!.book_publisher!),
+                        Text("Año: " + photo!.book_year!),
+                      ],
+                    ],
+                  ),
+                ),
+              )
             ],
+            SizedBox(
+              height: 20,
+            ),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);

@@ -47,8 +47,6 @@ class _modifiedBookState extends State<modifiedBook> {
   void initState() {
     super.initState();
     dbmanager = dbManager();
-    //photos = [];
-    //refreshImages();
     if (widget.id != null) {
       dbmanager.getPhoto(widget.id!).then((photo) {
         setState(() {
@@ -107,15 +105,6 @@ class _modifiedBookState extends State<modifiedBook> {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: [
-            const SizedBox(
-              height: 10,
-            ),
-            if (_image != null) 
-              Image.file(
-                _image!,
-                width: 200,
-                height: 200,
-              ),
             TextFormField(
               controller: controllerName,
               keyboardType: TextInputType.text,
@@ -133,13 +122,13 @@ class _modifiedBookState extends State<modifiedBook> {
               onSaved: (val1) => name_book = val1!,
             ),
             const SizedBox(
-              height: 20,
+              height: 10,
             ),
             TextFormField(
               controller: controllerAuthor,
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
-                labelText: 'Author',
+                labelText: 'Autor',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -261,15 +250,22 @@ class _modifiedBookState extends State<modifiedBook> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SQLite Image"),
+        title: Text("Modificar libro"),
         automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-             if (_image == null  && photo != null) ...[
-              Utility.ImageFromBase64String(photo!.photo_name!),
+            SizedBox(
+              height: 20,
+            ),
+            if (_image == null && photo != null) ...[
+              Container(
+                width: 200,
+                height: 320,
+                child: Utility.ImageFromBase64String(photo!.photo_name!),
+              ),
             ],
             Flexible(
               child: form(),
