@@ -13,6 +13,9 @@ class dbManager {
   static const String TABLE = 'PhotosTable';
   static const String DB_NAME = 'photos.db';
   static const String NAME_BOOk = 'name_book';
+  static const String AUTHOR_BOOK = 'author_book';
+  static const String BOOK_PUBLISHER = 'book_publisher';
+  static const String BOOK_YEAR = 'book_year';
 
   Future<Database> get db async {
     if (_db != null) {
@@ -31,7 +34,7 @@ class dbManager {
 
   _onCreate(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $PHOTO_NAME TEXT, $NAME_BOOk TEXT)");
+        "CREATE TABLE $TABLE ($ID INTEGER PRIMARY KEY, $PHOTO_NAME TEXT, $NAME_BOOk TEXT, $AUTHOR_BOOK TEXT, $BOOK_PUBLISHER TEXT, $BOOK_YEAR TEXT)");
   }
 
   //insert
@@ -45,7 +48,7 @@ class dbManager {
   Future<List<Photo>> getPhotos() async {
     var dbClient = await db;
     //List<Map> maps = await dbClient.query(TABLE, columns: [ID, PHOTO_NAME], where: '$ID = ?', whereArgs: [1]);
-    List<Map> maps = await dbClient.query(TABLE, columns: [ID, PHOTO_NAME, NAME_BOOk]);
+    List<Map> maps = await dbClient.query(TABLE, columns: [ID, PHOTO_NAME, NAME_BOOk, AUTHOR_BOOK, BOOK_PUBLISHER, BOOK_YEAR]);
     List<Photo> photos = [];
 
     if (maps.isNotEmpty) {

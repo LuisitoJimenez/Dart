@@ -1,3 +1,4 @@
+import 'package:almacenamiento_imagenes/formBook.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,7 +39,6 @@ class _SaveImageState extends State<SaveImage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     dbmanager = dbManager();
     photos = [];
@@ -54,52 +54,20 @@ class _SaveImageState extends State<SaveImage> {
     });
   }
 
-  pickImageFromGallery() {
+  pickImageFromGallery(String name_book, String book_publisher,
+      String book_year, String author_book) {
     ImagePicker imagePicker = ImagePicker();
     imagePicker.pickImage(source: ImageSource.gallery).then((imgFile) async {
       Uint8List? imageBytes = await imgFile?.readAsBytes();
       if (imageBytes != null) {
         String imgString = Utility.base64String(imageBytes!);
-        Photo photo = Photo(null, imgString);
+        Photo photo = Photo(
+            null, imgString, name_book, book_publisher, book_year, author_book);
         dbmanager.save(photo);
         refreshImages();
-      } else {
-        print("No se pudo cargar la imagen");
-      }
+      } else {}
     });
   }
-
-/*   gridView() {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
-        children: photos.map((photo) {
-          return Utility.ImageFromBase64String(photo.photo_name!);
-        }).toList(),
-      ),
-    );
-  } */
-
-  /*  gridView() {
-  return Padding(
-    padding: EdgeInsets.all(5.0),
-    child: GridView.count(
-      crossAxisCount: 3,
-      childAspectRatio: 1.0,
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
-      children: photos.map((photo) {
-        return Card(
-          child: Utility.ImageFromBase64String(photo.photo_name!),
-        );
-      }).toList(),
-    ),
-  );
-} */
 
   deleteBook(int id) {
     dbmanager.delete(id).then((_) {
@@ -107,52 +75,38 @@ class _SaveImageState extends State<SaveImage> {
     });
   }
 
-/*   gridView() {
+  gridView() {
     return Padding(
       padding: EdgeInsets.all(5.0),
       child: GridView.count(
         crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
-        children: photos.map((photo) {
-          return Card(
-            child: Column(
-              children: <Widget>[
-                Utility.ImageFromBase64String(photo.photo_name!),
-                Text(photo.id.toString()),
-              ],
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  } */
-
-   gridView() {
-    return Padding(
-      padding: EdgeInsets.all(5.0),
-      child: GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        mainAxisSpacing: 4.0,
-        crossAxisSpacing: 4.0,
+        childAspectRatio: 0.8,
+        mainAxisSpacing: 1.0,
+        crossAxisSpacing: 1.0,
         children: photos.map((photo) {
           return GestureDetector(
             onTap: () {
               setState(() {
                 selectedId = photo.id;
+
+                print("El id es:" + photo.id.toString());
+                print("El nombre es:" + photo.name_book.toString());
+                print("El autor es:" + photo.author_book.toString());
+                print("El año es:" + photo.book_year.toString());
+                print("El publisher es:" + photo.book_publisher.toString());
               });
             },
-            child: Card(
+
+             child: Card(
               color: selectedId == photo.id ? Colors.grey : null,
               child: Column(
                 children: <Widget>[
-                  Utility.ImageFromBase64String(photo.photo_name!),
-                  Text(photo.id.toString()),
+                  Expanded(
+                    child: Utility.ImageFromBase64String(photo.photo_name!),
+                  ),
                 ],
               ),
-            ),
+            ), 
           );
         }).toList(),
       ),
@@ -162,15 +116,7 @@ class _SaveImageState extends State<SaveImage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("SQLite Image"),
-        actions: <Widget>[
-/*         IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () {
-            pickImageFromGallery();
-          },
-        ) */
-        ],
+        title: Text("Books"),
       ),
       body: Center(
         child: Column(
@@ -185,35 +131,44 @@ class _SaveImageState extends State<SaveImage> {
       floatingActionButton: Stack(
         children: <Widget>[
           Positioned(
-            bottom: 10.0,
+            bottom: 5.0,
             right: 10.0,
             child: FloatingActionButton(
+              heroTag: "button1",
               onPressed: () {},
               child: Icon(Icons.edit),
+              mini: true
             ),
           ),
           Positioned(
-            bottom: 80.0,
-            right: 10.0,
+            bottom: 5.0,
+            right: 80.0,
             child: FloatingActionButton(
+              heroTag: "button2",
               onPressed: () {
                 if (selectedId! != null) {
                   deleteBook(selectedId!);
-                } else {
-                  print("El id del elemento es null");
-                }
+                } else {}
               },
               child: Icon(Icons.remove),
+              mini: true,
+              backgroundColor: Colors.red
             ),
           ),
           Positioned(
-            bottom: 150.0,
-            right: 10.0,
+            bottom: 5.0,
+            right: 150.0,
             child: FloatingActionButton(
+              heroTag: "button3",
               onPressed: () {
-                pickImageFromGallery();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const formBook()),
+                );
               },
               child: Icon(Icons.add),
+              mini:true,
+              backgroundColor: Colors.green,
             ),
           ),
         ],
