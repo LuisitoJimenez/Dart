@@ -40,7 +40,7 @@
       "name": "Metoprolol",
       "description": "El metoprolol es un bloqueador del receptor β₁ selectivo usado en el tratamiento de enfermedades severas del sistema cardiovascular, especialmente de la hipertensión y el infarto agudo de miocardio.",
       "dosage": "100 mg",
-      "contraindication": "Hipersensibilidad a metoprolol, a otros betabloqueantes; bloqueo auriculoventricular de 2º y 3 er grado; insuf. Cardiaca descompensada (edema pulmonar, hipoperfusión o hipotensión); con tto. inotrópico continuo o intermitente que actúe por antagonismo con receptores ß; bradicardia sinusal; síndrome del seno enfermo (a menos que tenga implantado un marcapasos permanente), shock cardiogénico, trastorno circulatorio arterial periférico grave; infarto de miocardio con ritmo cardiaco < 45 ppm, un intervalo P-Q > 0,24 seg o presión sistólica < 100 mm Hg."
+      "contraindication": "Hipersensibilidad a metoprolol, a otros betabloqueantes; bloqueo auriculoventricular de 2º y 3 er grado; insuf. Cardiaca descompensada (edema pulmonar, hipoperfusión o hipotensión); con tto. inotrópico continuo o intermitente que actúe por antagonismo con receptores ß; bradicardia sinusal;"
     },
     {
       "id": 6,
