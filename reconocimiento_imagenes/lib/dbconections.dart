@@ -5,9 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:reconocimiento_imagenes/medicine.dart';
 
 class DBConnections {
-  static const SERVER = "http://192.168.18.1/pharmacy/sqloperations.php";
+  static const SERVER = "http://192.168.0.103/pharmacy/sqloperations.php";
   static const _CREATE_TABLE_COMMAND = "CREATE_TABLE";
   static const _SELECT_TABLE_COMMAND = "SELECT_TABLE";
+  static const _INSERT_TABLE_COMMAND = "INSERT_DATA";
+  static const _UPDATE_TABLE_COMMAND = "UPDATE_DATA";
+  static const _DELETE_TABLE_COMMAND = "DELETE_DATA";
 
   static Future<String> createTable() async {
     try {
@@ -41,7 +44,7 @@ class DBConnections {
           print(element.name);
         });
         return list;
-        } else {
+      } else {
         return lista;
       }
     } catch (e) {
@@ -51,25 +54,84 @@ class DBConnections {
     }
   }
 
-/*   static Future<Map<String, dynamic>> selectData() async {
-    Map myMap = Map();
-    List<Medicine> medicines = [];
-    final response = await http.get(Uri.parse(SERVER));
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      myMap = json.decode(response.body);
-      print("Download");
-      print(response.body);
-      Iterable i = myMap["Medicine"];
-      medicines = i.map((m) => Medicine.FromJson(m)).toList();
-    } else {
-      throw Exception("Failed to fetch data");
-    }
-    throw '';
-  } */
-
   static List<Medicine>? parseResponse(String responsebody) {
     final parsedData = json.decode(responsebody).cast<Map<String, dynamic>>();
     return parsedData.map<Medicine>((json) => Medicine.FromJson(json)).toList();
+  }
+
+  static Future<String> insertData(String m_name, String dosage,
+      String m_description, String contraindication) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _INSERT_TABLE_COMMAND;
+      map['m_name'] = m_name;
+      map['dosage'] = dosage;
+      map['m_description'] = m_description;
+      map['contraindication'] = contraindication;
+
+      final response = await http.post(Uri.parse(SERVER), body: map);
+      print('INSERT response: ${response.body}');
+
+      if (200 == response.statusCode) {
+        print("Insert Success");
+        return response.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      print("Error adding data to the table");
+      print(e.toString());
+      return "error";
+    }
+  }
+
+// Update
+  static Future<String> updateData(String id, String m_name, String dosage,
+      String m_description, String contraindication) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _UPDATE_TABLE_COMMAND;
+      map['id'] = id;
+      map['m_name'] = m_name;
+      map['dosage'] = dosage;
+      map['m_description'] = m_description;
+      map['contraindication'] = contraindication;
+
+      final response = await http.post(Uri.parse(SERVER), body: map);
+      print('UPDATE response: ${response.body}');
+
+      if (200 == response.statusCode) {
+        print("Update Success");
+        return response.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      print("Error updating data in the table");
+      print(e.toString());
+      return "error";
+    }
+  }
+
+  static Future<String> deleteData(String id) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _DELETE_TABLE_COMMAND;
+      map['id'] = id;
+
+      final response = await http.post(Uri.parse(SERVER), body: map);
+      print('DELETE response: ${response.body}');
+
+      if (200 == response.statusCode) {
+        print("Delete Success");
+        return response.body;
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      print("Error deleting data from the table");
+      print(e.toString());
+      return "error";
+    }
   }
 }

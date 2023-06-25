@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:reconocimiento_imagenes/crud.dart';
 import 'package:reconocimiento_imagenes/dbconections.dart';
 import 'package:reconocimiento_imagenes/medicine.dart';
 import 'package:tflite/tflite.dart';
@@ -59,6 +60,7 @@ class _imageRecognitionState extends State<imageRecognition> {
         isLoading = false;
       });
     });
+    DBConnections.createTable();
     _selectData();
   }
 
@@ -74,119 +76,121 @@ class _imageRecognitionState extends State<imageRecognition> {
               alignment: Alignment.center,
               child: CircularProgressIndicator(),
             )
-          : Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _image == null
-                      ? Container()
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: Image.file(
-                            _image!,
-                            width: 200.0,
-                            height: 200.0,
-                          ),
-                        ),
-                  _outputs != null
-                      ? Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Table(border: TableBorder.all(), children: [
-                            TableRow(children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Nombre',
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
+          : SingleChildScrollView(
+              child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _image == null
+                          ? Container()
+                          : ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.file(
+                                _image!,
+                                width: 200.0,
+                                height: 200.0,
                               ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  medicine[_outputs![0]["index"]]
-                                      .name
-                                      .toString(),
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ]),
-                            TableRow(children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Dosis',
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  medicine[_outputs![0]["index"]]
-                                      .dosage
-                                      .toString(),
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ]),
-                            TableRow(children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Descripción',
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  medicine[_outputs![0]["index"]]
-                                      .description
-                                      .toString(),
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ]),
-                            TableRow(children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  'Contraindicación',
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Text(
-                                  medicine[_outputs![0]["index"]]
-                                      .contraindication
-                                      .toString(),
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontStyle: FontStyle.italic),
-                                ),
-                              ),
-                            ])
-                          ]))
-                      : Container()
-                ],
-              ),
+                            ),
+                      _outputs != null
+                          ? Padding(
+                              padding: EdgeInsets.all(20.0),
+                              child:
+                                  Table(border: TableBorder.all(), children: [
+                                TableRow(children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Nombre',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      medicine[_outputs![0]["index"]]
+                                          .name
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Dosis',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      medicine[_outputs![0]["index"]]
+                                          .dosage
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Descripción',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      medicine[_outputs![0]["index"]]
+                                          .description
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                                ]),
+                                TableRow(children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Contraindicación',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text(
+                                      medicine[_outputs![0]["index"]]
+                                          .contraindication
+                                          .toString(),
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontStyle: FontStyle.italic),
+                                    ),
+                                  ),
+                                ])
+                              ]))
+                          : Container()
+                    ],
+                  )),
             ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -195,11 +199,21 @@ class _imageRecognitionState extends State<imageRecognition> {
             onPressed: pickedImage,
             child: const Icon(Icons.image),
           ),
-        /*SizedBox(width: 16), // Espacio entre los botones
+          SizedBox(width: 16), // Espacio entre los botones
           FloatingActionButton(
             onPressed: pickedImageCamera,
             child: const Icon(Icons.camera_alt),
-          ),*/
+          ),
+          SizedBox(width: 16), // Espacio entre los botones
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Crud()),
+              );
+            },
+            child: const Icon(Icons.add),
+          ),
         ],
       ),
     );
