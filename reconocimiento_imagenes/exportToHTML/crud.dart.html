@@ -1,0 +1,306 @@
+<html>
+<head>
+<title>crud.dart</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #bcbec4;}
+.s1 { color: #6aab73;}
+.s2 { color: #bcbec4;}
+.s3 { color: #cf8e6d;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+crud.dart</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">'package:flutter/material.dart'</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">'package:reconocimiento_imagenes/dbconections.dart'</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">'package:reconocimiento_imagenes/medicine.dart'</span><span class="s2">;</span>
+
+<span class="s3">class </span><span class="s0">Crud </span><span class="s3">extends </span><span class="s0">StatefulWidget </span><span class="s2">{</span>
+  <span class="s0">@override</span>
+  <span class="s0">_CrudState createState</span><span class="s2">() =&gt; </span><span class="s0">_CrudState</span><span class="s2">();</span>
+<span class="s2">}</span>
+
+<span class="s3">class </span><span class="s0">_CrudState </span><span class="s3">extends </span><span class="s0">State</span><span class="s2">&lt;</span><span class="s0">Crud</span><span class="s2">&gt; {</span>
+  <span class="s0">List</span><span class="s2">&lt;</span><span class="s0">Medicine</span><span class="s2">&gt;? </span><span class="s0">_medicines</span><span class="s2">;</span>
+  <span class="s0">GlobalKey</span><span class="s2">&lt;</span><span class="s0">ScaffoldState</span><span class="s2">&gt;? </span><span class="s0">_scaffoldKey</span><span class="s2">;</span>
+  <span class="s0">TextEditingController</span><span class="s2">? </span><span class="s0">_nameController</span><span class="s2">;</span>
+  <span class="s0">TextEditingController</span><span class="s2">? </span><span class="s0">_dosageController</span><span class="s2">;</span>
+  <span class="s0">TextEditingController</span><span class="s2">? </span><span class="s0">_descriptionController</span><span class="s2">;</span>
+  <span class="s0">TextEditingController</span><span class="s2">? </span><span class="s0">_contraindicationController</span><span class="s2">;</span>
+  <span class="s0">TextEditingController</span><span class="s2">? </span><span class="s0">_correoController</span><span class="s2">;</span>
+  <span class="s0">String _currentID </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+  <span class="s0">bool _isupdating </span><span class="s2">= </span><span class="s3">false</span><span class="s2">;</span>
+
+  <span class="s0">@override</span>
+  <span class="s3">void </span><span class="s0">initState</span><span class="s2">() {</span>
+    <span class="s3">super</span><span class="s2">.</span><span class="s0">initState</span><span class="s2">();</span>
+    <span class="s0">_medicines </span><span class="s2">= [];</span>
+    <span class="s0">_scaffoldKey </span><span class="s2">= </span><span class="s0">GlobalKey</span><span class="s2">();</span>
+    <span class="s0">_nameController </span><span class="s2">= </span><span class="s0">TextEditingController</span><span class="s2">();</span>
+    <span class="s0">_dosageController </span><span class="s2">= </span><span class="s0">TextEditingController</span><span class="s2">();</span>
+    <span class="s0">_descriptionController </span><span class="s2">= </span><span class="s0">TextEditingController</span><span class="s2">();</span>
+    <span class="s0">_contraindicationController </span><span class="s2">= </span><span class="s0">TextEditingController</span><span class="s2">();</span>
+    <span class="s0">_selectData</span><span class="s2">();</span>
+    <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">createTable</span><span class="s2">();</span>
+  <span class="s2">}</span>
+
+  <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">BuildContext context</span><span class="s2">, </span><span class="s0">String mensaje</span><span class="s2">) {</span>
+    <span class="s3">final </span><span class="s0">snackBar </span><span class="s2">= </span><span class="s0">SnackBar</span><span class="s2">(</span>
+      <span class="s0">content</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s0">mensaje</span><span class="s2">.</span><span class="s0">toUpperCase</span><span class="s2">()),</span>
+    <span class="s2">);</span>
+    <span class="s0">ScaffoldMessenger</span><span class="s2">.</span><span class="s0">of</span><span class="s2">(</span><span class="s0">context</span><span class="s2">).</span><span class="s0">showSnackBar</span><span class="s2">(</span><span class="s0">snackBar</span><span class="s2">);</span>
+  <span class="s2">}</span>
+
+  <span class="s0">_deleteData</span><span class="s2">() {</span>
+    <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">deleteData</span><span class="s2">(</span><span class="s0">_currentID</span><span class="s2">).</span><span class="s0">then</span><span class="s2">((</span><span class="s0">result</span><span class="s2">) {</span>
+      <span class="s3">if </span><span class="s2">(</span><span class="s1">'success' </span><span class="s2">== </span><span class="s0">result</span><span class="s2">) {</span>
+        <span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+      <span class="s2">}</span>
+      <span class="s0">_selectData</span><span class="s2">();</span>
+    <span class="s2">});</span>
+    <span class="s0">_currentID </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+  <span class="s2">}</span>
+
+  <span class="s0">_updateData</span><span class="s2">() {</span>
+    <span class="s3">if </span><span class="s2">(</span><span class="s0">_currentID </span><span class="s2">== </span><span class="s1">&quot;&quot;</span><span class="s2">) {</span>
+      <span class="s0">debugPrint</span><span class="s2">(</span><span class="s1">&quot;no hay elementos seleccionados&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">updateData</span><span class="s2">(</span>
+            <span class="s0">_currentID</span><span class="s2">.</span><span class="s0">toString</span><span class="s2">(),</span>
+            <span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">,</span>
+            <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">,</span>
+            <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">,</span>
+            <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">)</span>
+        <span class="s2">.</span><span class="s0">then</span><span class="s2">((</span><span class="s0">result</span><span class="s2">) {</span>
+      <span class="s3">if </span><span class="s2">(</span><span class="s1">'success' </span><span class="s2">== </span><span class="s0">result</span><span class="s2">) {</span>
+        <span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+      <span class="s2">}</span>
+      <span class="s0">_selectData</span><span class="s2">();</span>
+    <span class="s2">});</span>
+    <span class="s0">_currentID </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+  <span class="s2">}</span>
+
+  <span class="s0">_insertData</span><span class="s2">() {</span>
+    <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">insertData</span><span class="s2">(</span><span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">, </span><span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">,</span>
+            <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">, </span><span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">)</span>
+        <span class="s2">.</span><span class="s0">then</span><span class="s2">((</span><span class="s0">result</span><span class="s2">) {</span>
+      <span class="s3">if </span><span class="s2">(</span><span class="s1">'success' </span><span class="s2">== </span><span class="s0">result</span><span class="s2">) {</span>
+        <span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s0">_selectData</span><span class="s2">();</span>
+      <span class="s2">}</span>
+    <span class="s2">});</span>
+    <span class="s0">_currentID </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+  <span class="s2">}</span>
+
+  <span class="s0">_selectData</span><span class="s2">() {</span>
+    <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">selectData</span><span class="s2">().</span><span class="s0">then</span><span class="s2">((</span><span class="s0">medicines</span><span class="s2">) {</span>
+      <span class="s0">setState</span><span class="s2">(() {</span>
+        <span class="s0">_medicines </span><span class="s2">= </span><span class="s0">medicines</span><span class="s2">;</span>
+      <span class="s2">});</span>
+    <span class="s2">});</span>
+  <span class="s2">}</span>
+
+<span class="s4">//Body</span>
+
+  <span class="s0">SingleChildScrollView _body</span><span class="s2">() {</span>
+    <span class="s3">return </span><span class="s0">SingleChildScrollView</span><span class="s2">(</span>
+        <span class="s0">scrollDirection</span><span class="s2">: </span><span class="s0">Axis</span><span class="s2">.</span><span class="s0">horizontal</span><span class="s2">,</span>
+        <span class="s0">child</span><span class="s2">: </span><span class="s0">DataTable</span><span class="s2">(</span>
+          <span class="s0">columns</span><span class="s2">: [</span>
+            <span class="s0">DataColumn</span><span class="s2">(</span><span class="s0">label</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;ID&quot;</span><span class="s2">)),</span>
+            <span class="s0">DataColumn</span><span class="s2">(</span><span class="s0">label</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;Nombre&quot;</span><span class="s2">)),</span>
+            <span class="s0">DataColumn</span><span class="s2">(</span><span class="s0">label</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;Dosis&quot;</span><span class="s2">)),</span>
+            <span class="s0">DataColumn</span><span class="s2">(</span><span class="s0">label</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;Descripción&quot;</span><span class="s2">)),</span>
+            <span class="s0">DataColumn</span><span class="s2">(</span><span class="s0">label</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;Contraindicación&quot;</span><span class="s2">)),</span>
+          <span class="s2">],</span>
+          <span class="s0">rows</span><span class="s2">: </span><span class="s0">_medicines</span><span class="s2">!</span>
+              <span class="s2">.</span><span class="s0">map</span><span class="s2">((</span><span class="s0">medicine</span><span class="s2">) =&gt; </span><span class="s0">DataRow</span><span class="s2">(</span><span class="s0">cells</span><span class="s2">: [</span>
+                    <span class="s0">DataCell</span><span class="s2">(</span><span class="s0">Text</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">id</span><span class="s2">!), </span><span class="s0">onTap</span><span class="s2">: () {</span>
+                      <span class="s0">_currentID </span><span class="s2">= </span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">id</span><span class="s2">.</span><span class="s0">toString</span><span class="s2">();</span>
+                      <span class="s0">print</span><span class="s2">(</span><span class="s1">&quot;Id Actual&quot;</span><span class="s2">);</span>
+                      <span class="s0">print</span><span class="s2">(</span><span class="s0">_currentID</span><span class="s2">);</span>
+                      <span class="s0">_isupdating </span><span class="s2">= </span><span class="s3">true</span><span class="s2">;</span>
+                      <span class="s0">print</span><span class="s2">(</span><span class="s1">&quot;Update Status&quot;</span><span class="s2">);</span>
+                      <span class="s0">print</span><span class="s2">(</span><span class="s0">_isupdating</span><span class="s2">);</span>
+                      <span class="s0">fillTextFields</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">);</span>
+                    <span class="s2">}),</span>
+                    <span class="s0">DataCell</span><span class="s2">(</span><span class="s0">Text</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">name</span><span class="s2">!)),</span>
+                    <span class="s0">DataCell</span><span class="s2">(</span><span class="s0">Text</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">dosage</span><span class="s2">!)),</span>
+                    <span class="s0">DataCell</span><span class="s2">(</span><span class="s0">Text</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">description</span><span class="s2">!)),</span>
+                    <span class="s0">DataCell</span><span class="s2">(</span><span class="s0">Text</span><span class="s2">(</span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">contraindication</span><span class="s2">!)),</span>
+                  <span class="s2">]))</span>
+              <span class="s2">.</span><span class="s0">toList</span><span class="s2">(),</span>
+        <span class="s2">));</span>
+  <span class="s2">}</span>
+
+  <span class="s0">String _searchText </span><span class="s2">= </span><span class="s1">&quot;&quot;</span><span class="s2">;</span>
+  <span class="s3">final </span><span class="s0">TextEditingController _search </span><span class="s2">= </span><span class="s0">TextEditingController</span><span class="s2">();</span>
+
+  <span class="s0">@override</span>
+  <span class="s0">Widget build</span><span class="s2">(</span><span class="s0">BuildContext context</span><span class="s2">) {</span>
+    <span class="s3">return </span><span class="s0">Scaffold</span><span class="s2">(</span>
+      <span class="s0">key</span><span class="s2">: </span><span class="s0">_scaffoldKey</span><span class="s2">,</span>
+      <span class="s0">appBar</span><span class="s2">: </span><span class="s0">AppBar</span><span class="s2">(</span>
+        <span class="s0">title</span><span class="s2">: </span><span class="s0">Text</span><span class="s2">(</span><span class="s1">&quot;Administración&quot;</span><span class="s2">),</span>
+        <span class="s0">actions</span><span class="s2">: &lt;</span><span class="s0">Widget</span><span class="s2">&gt;[</span>
+          <span class="s0">IconButton</span><span class="s2">(</span>
+            <span class="s0">icon</span><span class="s2">: </span><span class="s0">Icon</span><span class="s2">(</span><span class="s0">Icons</span><span class="s2">.</span><span class="s0">update</span><span class="s2">),</span>
+            <span class="s0">onPressed</span><span class="s2">: () {</span>
+              <span class="s0">setState</span><span class="s2">(() </span><span class="s0">async </span><span class="s2">{</span>
+                <span class="s0">_medicines </span><span class="s2">= </span><span class="s0">await _selectData</span><span class="s2">();</span>
+              <span class="s2">});</span>
+            <span class="s2">},</span>
+          <span class="s2">)</span>
+        <span class="s2">],</span>
+      <span class="s2">),</span>
+      <span class="s0">body</span><span class="s2">: </span><span class="s0">Container</span><span class="s2">(</span>
+        <span class="s0">child</span><span class="s2">: </span><span class="s0">Column</span><span class="s2">(</span>
+          <span class="s0">children</span><span class="s2">: [</span>
+            <span class="s0">Container</span><span class="s2">(</span>
+              <span class="s0">child</span><span class="s2">: </span><span class="s0">Column</span><span class="s2">(</span>
+                <span class="s0">children</span><span class="s2">: [</span>
+                  <span class="s0">Padding</span><span class="s2">(</span>
+                    <span class="s0">padding</span><span class="s2">: </span><span class="s0">EdgeInsets</span><span class="s2">.</span><span class="s0">all</span><span class="s2">(</span><span class="s5">10.0</span><span class="s2">),</span>
+                    <span class="s0">child</span><span class="s2">: </span><span class="s0">TextField</span><span class="s2">(</span>
+                      <span class="s0">controller</span><span class="s2">: </span><span class="s0">_nameController</span><span class="s2">,</span>
+                      <span class="s0">decoration</span><span class="s2">: </span><span class="s0">InputDecoration</span><span class="s2">.</span><span class="s0">collapsed</span><span class="s2">(</span><span class="s0">hintText</span><span class="s2">: </span><span class="s1">&quot;Nombre&quot;</span><span class="s2">),</span>
+                    <span class="s2">),</span>
+                  <span class="s2">),</span>
+                  <span class="s0">Padding</span><span class="s2">(</span>
+                    <span class="s0">padding</span><span class="s2">: </span><span class="s0">EdgeInsets</span><span class="s2">.</span><span class="s0">all</span><span class="s2">(</span><span class="s5">10.0</span><span class="s2">),</span>
+                    <span class="s0">child</span><span class="s2">: </span><span class="s0">TextField</span><span class="s2">(</span>
+                      <span class="s0">controller</span><span class="s2">: </span><span class="s0">_dosageController</span><span class="s2">,</span>
+                      <span class="s0">decoration</span><span class="s2">: </span><span class="s0">InputDecoration</span><span class="s2">.</span><span class="s0">collapsed</span><span class="s2">(</span><span class="s0">hintText</span><span class="s2">: </span><span class="s1">&quot;Dosis&quot;</span><span class="s2">),</span>
+                    <span class="s2">),</span>
+                  <span class="s2">),</span>
+                  <span class="s0">Padding</span><span class="s2">(</span>
+                    <span class="s0">padding</span><span class="s2">: </span><span class="s0">EdgeInsets</span><span class="s2">.</span><span class="s0">all</span><span class="s2">(</span><span class="s5">10.0</span><span class="s2">),</span>
+                    <span class="s0">child</span><span class="s2">: </span><span class="s0">TextField</span><span class="s2">(</span>
+                      <span class="s0">controller</span><span class="s2">: </span><span class="s0">_descriptionController</span><span class="s2">,</span>
+                      <span class="s0">decoration</span><span class="s2">:</span>
+                          <span class="s0">InputDecoration</span><span class="s2">.</span><span class="s0">collapsed</span><span class="s2">(</span><span class="s0">hintText</span><span class="s2">: </span><span class="s1">&quot;Descripción&quot;</span><span class="s2">),</span>
+                    <span class="s2">),</span>
+                  <span class="s2">),</span>
+                  <span class="s0">Padding</span><span class="s2">(</span>
+                    <span class="s0">padding</span><span class="s2">: </span><span class="s0">EdgeInsets</span><span class="s2">.</span><span class="s0">all</span><span class="s2">(</span><span class="s5">10.0</span><span class="s2">),</span>
+                    <span class="s0">child</span><span class="s2">: </span><span class="s0">TextField</span><span class="s2">(</span>
+                      <span class="s0">controller</span><span class="s2">: </span><span class="s0">_contraindicationController</span><span class="s2">,</span>
+                      <span class="s0">decoration</span><span class="s2">: </span><span class="s0">InputDecoration</span><span class="s2">.</span><span class="s0">collapsed</span><span class="s2">(</span>
+                          <span class="s0">hintText</span><span class="s2">: </span><span class="s1">&quot;Contraindicación&quot;</span><span class="s2">),</span>
+                    <span class="s2">),</span>
+                  <span class="s2">),</span>
+                <span class="s2">],</span>
+              <span class="s2">),</span>
+            <span class="s2">),</span>
+            <span class="s0">SizedBox</span><span class="s2">(</span>
+              <span class="s0">height</span><span class="s2">: </span><span class="s5">30</span><span class="s2">,</span>
+            <span class="s2">),</span>
+            <span class="s0">Expanded</span><span class="s2">(</span>
+              <span class="s0">child</span><span class="s2">: </span><span class="s0">_body</span><span class="s2">(),</span>
+            <span class="s2">),</span>
+          <span class="s2">],</span>
+        <span class="s2">),</span>
+      <span class="s2">),</span>
+      <span class="s0">floatingActionButton</span><span class="s2">: </span><span class="s0">Row</span><span class="s2">(</span>
+        <span class="s0">mainAxisAlignment</span><span class="s2">: </span><span class="s0">MainAxisAlignment</span><span class="s2">.</span><span class="s0">end</span><span class="s2">,</span>
+        <span class="s0">children</span><span class="s2">: [</span>
+          <span class="s0">FloatingActionButton</span><span class="s2">(</span>
+            <span class="s0">onPressed</span><span class="s2">: () {</span>
+              <span class="s3">if </span><span class="s2">(</span><span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">.</span><span class="s0">isEmpty </span><span class="s2">||</span>
+                  <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">.</span><span class="s0">isEmpty </span><span class="s2">||</span>
+                  <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">.</span><span class="s0">isEmpty </span><span class="s2">||</span>
+                  <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text</span><span class="s2">.</span><span class="s0">isEmpty</span><span class="s2">) {</span>
+                <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;Aun hay espacios en blanco&quot;</span><span class="s2">);</span>
+              <span class="s2">} </span><span class="s3">else </span><span class="s2">{</span>
+                <span class="s3">if </span><span class="s2">(</span><span class="s0">_currentID </span><span class="s2">!= </span><span class="s1">&quot;&quot;</span><span class="s2">) {</span>
+                  <span class="s0">_showSnackBar</span><span class="s2">(</span>
+                      <span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;No se permite ingresar el mismo elemento&quot;</span><span class="s2">);</span>
+                <span class="s2">} </span><span class="s3">else </span><span class="s2">{</span>
+                  <span class="s0">_insertData</span><span class="s2">();</span>
+                  <span class="s0">_isupdating </span><span class="s2">= </span><span class="s3">false</span><span class="s2">;</span>
+                  <span class="s0">_selectData</span><span class="s2">();</span>
+                <span class="s2">}</span>
+              <span class="s2">}</span>
+            <span class="s2">},</span>
+            <span class="s0">child</span><span class="s2">: </span><span class="s0">Icon</span><span class="s2">(</span><span class="s0">Icons</span><span class="s2">.</span><span class="s0">add</span><span class="s2">),</span>
+          <span class="s2">),</span>
+          <span class="s0">SizedBox</span><span class="s2">(</span>
+            <span class="s0">width</span><span class="s2">: </span><span class="s5">10</span><span class="s2">,</span>
+          <span class="s2">),</span>
+          <span class="s0">FloatingActionButton</span><span class="s2">(</span>
+            <span class="s0">onPressed</span><span class="s2">: () {</span>
+              <span class="s3">if </span><span class="s2">(</span><span class="s0">_currentID </span><span class="s2">== </span><span class="s1">&quot;&quot;</span><span class="s2">) {</span>
+                <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;Seleccione un elemento&quot;</span><span class="s2">);</span>
+              <span class="s2">}</span>
+              <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">selectData</span><span class="s2">().</span><span class="s0">then</span><span class="s2">((</span><span class="s0">medicines</span><span class="s2">) {</span>
+                <span class="s0">setState</span><span class="s2">(() {</span>
+                  <span class="s0">_medicines </span><span class="s2">= </span><span class="s0">medicines</span><span class="s2">;</span>
+                <span class="s2">});</span>
+                <span class="s3">if </span><span class="s2">(</span><span class="s0">medicines</span><span class="s2">?.</span><span class="s0">length </span><span class="s2">== </span><span class="s5">0</span><span class="s2">) {</span>
+                  <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;No hay elementos para modificar&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+              <span class="s2">});</span>
+              <span class="s3">if </span><span class="s2">(</span><span class="s0">_isupdating </span><span class="s2">== </span><span class="s3">true</span><span class="s2">) {</span>
+                <span class="s0">_updateData</span><span class="s2">();</span>
+                <span class="s0">_selectData</span><span class="s2">();</span>
+              <span class="s2">}</span>
+            <span class="s2">},</span>
+            <span class="s0">backgroundColor</span><span class="s2">: </span><span class="s0">Colors</span><span class="s2">.</span><span class="s0">green</span><span class="s2">,</span>
+            <span class="s0">child</span><span class="s2">: </span><span class="s0">Icon</span><span class="s2">(</span><span class="s0">Icons</span><span class="s2">.</span><span class="s0">edit</span><span class="s2">),</span>
+          <span class="s2">),</span>
+          <span class="s0">SizedBox</span><span class="s2">(</span>
+            <span class="s0">width</span><span class="s2">: </span><span class="s5">10</span><span class="s2">,</span>
+          <span class="s2">),</span>
+          <span class="s0">FloatingActionButton</span><span class="s2">(</span>
+            <span class="s0">onPressed</span><span class="s2">: () {</span>
+              <span class="s3">if </span><span class="s2">(</span><span class="s0">_currentID </span><span class="s2">== </span><span class="s1">&quot;&quot;</span><span class="s2">) {</span>
+                <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;Seleccione un elemento&quot;</span><span class="s2">);</span>
+              <span class="s2">}</span>
+              <span class="s0">DBConnections</span><span class="s2">.</span><span class="s0">selectData</span><span class="s2">().</span><span class="s0">then</span><span class="s2">((</span><span class="s0">medicines</span><span class="s2">) {</span>
+                <span class="s0">setState</span><span class="s2">(() {</span>
+                  <span class="s0">_medicines </span><span class="s2">= </span><span class="s0">medicines</span><span class="s2">;</span>
+                <span class="s2">});</span>
+                <span class="s3">if </span><span class="s2">(</span><span class="s0">medicines</span><span class="s2">?.</span><span class="s0">length </span><span class="s2">== </span><span class="s5">0</span><span class="s2">) {</span>
+                  <span class="s0">_showSnackBar</span><span class="s2">(</span><span class="s0">context</span><span class="s2">, </span><span class="s1">&quot;No hay elementos para eliminar&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+              <span class="s2">});</span>
+              <span class="s0">_deleteData</span><span class="s2">();</span>
+            <span class="s2">},</span>
+            <span class="s0">backgroundColor</span><span class="s2">: </span><span class="s0">Colors</span><span class="s2">.</span><span class="s0">red</span><span class="s2">,</span>
+            <span class="s0">child</span><span class="s2">: </span><span class="s0">Icon</span><span class="s2">(</span><span class="s0">Icons</span><span class="s2">.</span><span class="s0">delete</span><span class="s2">),</span>
+          <span class="s2">),</span>
+          <span class="s0">SizedBox</span><span class="s2">(</span>
+            <span class="s0">width</span><span class="s2">: </span><span class="s5">10</span><span class="s2">,</span>
+          <span class="s2">),</span>
+        <span class="s2">],</span>
+      <span class="s2">),</span>
+    <span class="s2">);</span>
+  <span class="s2">}</span>
+
+  <span class="s3">void </span><span class="s0">fillTextFields</span><span class="s2">(</span><span class="s0">Medicine medicine</span><span class="s2">) {</span>
+    <span class="s0">_nameController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">name</span><span class="s2">!;</span>
+    <span class="s0">_dosageController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">dosage</span><span class="s2">!;</span>
+    <span class="s0">_descriptionController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">description</span><span class="s2">!;</span>
+    <span class="s0">_contraindicationController</span><span class="s2">!.</span><span class="s0">text </span><span class="s2">= </span><span class="s0">medicine</span><span class="s2">.</span><span class="s0">contraindication</span><span class="s2">!;</span>
+  <span class="s2">}</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
