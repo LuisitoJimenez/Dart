@@ -1,3 +1,10 @@
-1 Paracetamol
+0 Paracetamol
+1 Ampicilina
 2 Magaldrato
-3 Ampicilina
+3 Acetaminofen
+4 Omeprazol
+5 Metoprolol
+6 Levotiroxina
+7 Metformina
+8 Losartan
+9 Calcio

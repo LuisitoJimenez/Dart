@@ -1,7 +1,7 @@
 
 class Medicine {
 
-  String? id;
+  int? id;
   String? name;
   String? dosage;
   String? description;
