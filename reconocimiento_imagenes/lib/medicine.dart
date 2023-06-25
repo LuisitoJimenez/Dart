@@ -1,13 +1,16 @@
-
 class Medicine {
-
   int? id;
   String? name;
   String? dosage;
   String? description;
   String? contraindication;
 
-  Medicine({required this.id, required this.name, required this.dosage, required this.description, required this.contraindication});
+  Medicine(
+      {required this.id,
+      required this.name,
+      required this.dosage,
+      required this.description,
+      required this.contraindication});
 
   Medicine.FromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -26,5 +29,4 @@ class Medicine {
     data['contraindication'] = this.contraindication;
     return data;
   }
-
 }
