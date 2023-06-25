@@ -1,25 +1,74 @@
 {
-    "Medicine": [
-        {
-            "id": "1",
-            "name": "Paracetamol",
-            "description": "Analgésico y antipirético. Inhibe la síntesis de prostaglandinas en el SNC y bloquea la generación del impulso doloroso a nivel periférico.",
-            "dosage": "120 mg/5 ml",
-            "contraindication": "Hipersensibilidad a paracetamol, codeína, depresión respiratoria aguda, asma aguda, EPOC, íleo paralítico o riesgo, enf. hepáticas, hepatitis viral, presión intracraneal aumentada"
-        },
-        {
-            "id": "2",
-            "name": "Magaldrato",
-            "description": "Antiácido no absorbible, complejo aluminato de Mg hidratado con estructura reticular.",
-            "dosage": "1g/100ml",
-            "contraindication": "Hipersensibilidad; obstrucción orgánica del tubo digestivo; dolor abdominal de origen desconocido; I.R. grave, uremia, hipofosfatemia; hipermagnesemia."
-        },
-        {
-            "id": "3",
-            "name": "Ampicilina",
-            "description": "Bactericida. Inhibe la síntesis y la reparación de la pared bacteriana, amplio espectro.",
-            "dosage": "1g/5ml",
-            "contraindication": "Alérgicos a penicilinas. Mononucleosis infecciosa."
-        }
-    ]
+  "Medicine": [
+    {
+      "id": 0,
+      "name": "Paracetamol",
+      "description": "Analgésico y antipirético. Inhibe la síntesis de prostaglandinas en el SNC y bloquea la generación del impulso doloroso a nivel periférico.",
+      "dosage": "120 mg/5 ml",
+      "contraindication": "Hipersensibilidad a paracetamol, codeína, depresión respiratoria aguda, asma aguda, EPOC, íleo paralítico o riesgo, enf. hepáticas, hepatitis viral, presión intracraneal aumentada"
+    },
+    {
+      "id": 1,
+      "name": "Ampicilina",
+      "description": "Bactericida. Inhibe la síntesis y la reparación de la pared bacteriana, amplio espectro.",
+      "dosage": "1g/5ml",
+      "contraindication": "Alérgicos a penicilinas. Mononucleosis infecciosa."
+    },
+    {
+      "id": 2,
+      "name": "Magaldrato",
+      "description": "Antiácido no absorbible, complejo aluminato de Mg hidratado con estructura reticular.",
+      "dosage": "1g/100ml",
+      "contraindication": "Hipersensibilidad; obstrucción orgánica del tubo digestivo; dolor abdominal de origen desconocido; I.R. grave, uremia, hipofosfatemia; hipermagnesemia."
+    },
+    {
+      "id": 3,
+      "name": "Acetaminofen",
+      "description": "El paracetamol, también conocido como acetaminofén o acetaminofeno o p-Acetilaminofenol, es un fármaco con propiedades analgésicas y antipiréticas utilizado principalmente para tratar la fiebre y el dolor leve y moderado, ​​ aunque su eficacia en el alivio de la fiebre en niños no está clara.",
+      "dosage": "40 mg/ 50ml",
+      "contraindication": "Hipersensibilidad a paracetamol, codeína, depresión respiratoria aguda, asma aguda, EPOC, íleo paralítico o riesgo, enf. hepáticas, hepatitis viral, presión intracraneal aumentada"
+    },
+    {
+      "id": 4,
+      "name": "Omeprazol",
+      "description": "El omeprazol se utiliza en el tratamiento de la dispepsia, úlcera péptica, enfermedades por reflujo gastroesofágico y el síndrome de Zollinger-Ellison.",
+      "dosage": "40g/50ml",
+      "contraindication": "No se aconseja su administración durante el embarazo y la lactancia."
+    },
+    {
+      "id": 5,
+      "name": "Metoprolol",
+      "description": "El metoprolol es un bloqueador del receptor β₁ selectivo usado en el tratamiento de enfermedades severas del sistema cardiovascular, especialmente de la hipertensión y el infarto agudo de miocardio.",
+      "dosage": "100 mg",
+      "contraindication": "Hipersensibilidad a metoprolol, a otros betabloqueantes; bloqueo auriculoventricular de 2º y 3 er grado; insuf. Cardiaca descompensada (edema pulmonar, hipoperfusión o hipotensión); con tto. inotrópico continuo o intermitente que actúe por antagonismo con receptores ß; bradicardia sinusal;"
+    },
+    {
+      "id": 6,
+      "name": "Levotiroxina",
+      "description": "El objetivo del tratamiento con Levotiroxina sódica Teva es reemplazar la hormona tiroidea y/o aliviar el estrés sobre la glándula tiroides.",
+      "dosage": "50 mg",
+      "contraindication": "Durante el embarazo, levotiroxina no debe usarse al mismo tiempo con medicamentos contra una glándula tiroides hiperactiva (medicamentos antitiroideos) (ver también “Embarazo, lactancia y fertilidad”)."
+    },
+    {
+      "id": 7,
+      "name": "Metformina",
+      "description": "La metformina es una biguanida con efectos antihiperglucemiantes, tanto en hiperglucemia postprandial como basal en plasma. No estimula la secreción de insulina, por lo que no provoca hipoglucemia. La metformina reduce la hiperinsulinemia basal y, en combinación con la insulina, reduce las necesidades de ésta.",
+      "dosage": "100 mg",
+      "contraindication": "Hipersensibilidad; cetoacidosage diabética, precoma diabético; I.R. (Clcr < 60 ml/min); patología aguda con riesgo de alteración renal: deshidratación, infección grave, shock; enf. aguda o crónica con riesgo de hipoxia tisular: insuf. cardiaca o respiratoria, infarto de miocardio reciente, shock; I.H., intoxicación alcohólica aguda, alcoholismo."
+    },
+    {
+      "id": 8,
+      "name": "Losartan",
+      "description": "Antagonista oral sintético del receptor de la angiotensina II (tipo AT1). Bloquea selectivamente el receptor AT1 , lo que provoca una reducción de los efectos de la angiotensina II.",
+      "dosage": "1g/100ml",
+      "contraindication": "Hipersensibilidad a losartán. I.H. grave. 2º y 3 er trimestre de embarazo. Concomitante con aliskireno en pacientes con diabetes o con I.R. de moderada a grave (TFG < 60 ml/min/1,73 2 )."
+    },
+    {
+      "id": 9,
+      "name": "Calcio",
+      "description": "Inhibe indirectamente la desmineralización del hueso. Interviene en contracción muscular, transmisión nerviosa, coagulación sanguínea y como 2º mensajero asociado a la activación o inhibición de distintos procesos enzimáticos.",
+      "dosage": "18 mg/ml",
+      "contraindication": "Hipersensibilidad a losartán. I.H. grave. 2º y 3 er trimestre de embarazo. Concomitante con aliskireno en pacientes con diabetes o con I.R. de moderada a grave (TFG < 60 ml/min/1,73 2 )."
+    }
+  ]
 }
